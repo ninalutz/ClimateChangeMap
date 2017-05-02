@@ -22,13 +22,13 @@ void setup() {
   size(displayWidth - 50, displayHeight-100, P2D);
   smooth();
 
-  map = new UnfoldingMap(this, 50, 50, displayWidth - 100,  displayHeight-200);
+  map = new UnfoldingMap(this, 0, 100, displayWidth - 50,  displayHeight-200);
   map.zoomToLevel(2);
-  map.setBackgroundColor(240);
   MapUtils.createDefaultEventDispatcher(this, map);
 
   // Load country polygons and adds them as markers
-  List<Feature> countries = GeoJSONReader.loadData(this, "countries.geo.json");
+ // List<Feature> countries = GeoJSONReader.loadData(this, "countries.geo.json");
+  List<Feature> countries = GeoJSONReader.loadData(this, "states.geo.json");
   countryMarkers = MapUtils.createSimpleMarkers(countries);
   map.addMarkers(countryMarkers);
 
@@ -36,6 +36,8 @@ void setup() {
   dataEntriesMap = loadPopulationDensityFromCSV("countries-population-density.csv");
   println("Loaded " + dataEntriesMap.size() + " data entries");
 
+  map.setBackgroundColor(200);
+  
   // Country markers are shaded according to its population density (only once)
   shadeCountries();
 }
@@ -45,6 +47,14 @@ void draw() {
 
   // Draw map tiles and country markers
   map.draw();
+  
+  fill(0);
+  noStroke();
+  textSize(40);
+  textAlign(CENTER);
+  text("Climate Change Map", width/2, 60);
+  
+    
 }
 
 void shadeCountries() {
@@ -54,7 +64,7 @@ void shadeCountries() {
     DataEntry dataEntry = dataEntriesMap.get(countryId);
 
     if (dataEntry != null && dataEntry.value != null) {
-      // Encode value as brightness (values range: 0-1000)
+      // Encode value as brightness (values range: 0-10 00)
       float transparency = map(dataEntry.value, 0, 700, 10, 255);
       marker.setColor(color(255, 0, 0, transparency));
     } 
